@@ -1,0 +1,57 @@
+﻿#flightDataTabel {
+    height: 150px;
+    width: 100%;
+    background-color: hotpink;
+    text-align: center;
+    padding-top: 25px;
+}
+
+#relative_to {
+    width: 200px;
+    text-align: center;
+}
+
+#getFlight {
+    left: 30px;
+    text-align: left;
+}
+
+#myFlightList {
+    width: 100%;
+    text-align: center;
+    background-color: #ffb3ff;
+    overflow: auto;
+    height: 10px;
+}
+
+#myFlightListSyncAll {
+    width: 100%;
+    text-align: center;
+    background-color: #cc00cc;
+}
+
+#buttems {
+    height: 100px;
+    width: 100%;
+    padding: 20px;
+    background-color: antiquewhite;
+}
+
+#map {
+    height: 500px;
+    width: 100%
+}
+
+#help {
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    display: none;
+}
+
+#error_relativeToNotCorrect, #error_DbEmpty, #error_generic {
+    width: 30%;
+    text-align: center;
+    font-size: 20px;
+    display: none;
+}
