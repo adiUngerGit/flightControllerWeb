@@ -1,0 +1,11 @@
+206492746, Adi unger
+208393744,Liel shuker
+Mayyan Sayyah,209493188
+
+unit test
+we write 5 unit tests that check 5 diffrent actions
+*delete from controller - we use mock to check the delete method is working correctly
+*add server to DB - the test check that the given server insert correctly to the db
+*remove server from db - the thet check the given id server removed from the db
+*add to flightPlan db - the test inserting new Flight plan to db and check it insert correctly 
+*add  to the  flight from controller - we used mock to check the post Flightcontroller method 

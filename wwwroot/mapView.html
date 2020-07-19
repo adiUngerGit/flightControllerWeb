@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>my google map</title>
+    <style>
+        #map{
+            height:600px;
+            width:80%
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        function initMap() {
+            var options = {
+                zoom: 8,
+                center: { lat: 31.771959, lng: 35.217018 }
+            }
+            var map = new google.maps.Map(document.getElementById('map'), options);
+            addMarker({ coords: { lat: 33.000000, lng: 35.217018 }, content: '<h1> out flight </h1>' });
+
+            addMarker({ coords: { lat: 31.771959, lng: 35.217018 }, content: '<h1> out flight </h1>' });
+            function addMarker(props) {
+                var icon = {
+                    url: 'http://maps.google.com/mapfiles/kml/shapes/airports.png',
+                    scaledSize: new google.maps.Size(30, 30),
+                };
+                var marker = new google.maps.Marker({
+                    position: props.coords,
+                    map: map,
+                    icon: icon
+                });
+                if (props.content) {
+                    var infoWindow = new google.maps.InfoWindow({
+                        content: props.content
+                    });
+
+                   marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
+                }
+            }
+        }
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBgGhfXeHbOgaq02UTUAV1Dp7xrbXF4PA&callback=initMap">
+    </script>
+</body>
+</html>

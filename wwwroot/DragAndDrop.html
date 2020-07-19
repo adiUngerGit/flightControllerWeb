@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <style>
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            width: 480px;
+            font-family: sans-serif;
+            margin: 100px auto;
+            padding: 20px;
+        }
+
+            #drop-area.highlight {
+                border-color: purple;
+            }
+
+        p {
+            margin-top: 0;
+        }
+
+        .my-form {
+            margin-bottom: 10px;
+        }
+
+        #gallery {
+            margin-top: 10px;
+        }
+
+            #gallery img {
+                width: 150px;
+                margin-bottom: 10px;
+                margin-right: 10px;
+                vertical-align: middle;
+            }
+
+        .button {
+            display: inline-block;
+            padding: 10px;
+            background: #ccc;
+            cursor: pointer;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+            .button:hover {
+                background: #ddd;
+            }
+
+        #fileElem {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <input type="button" onclick="location.href='index.html';" value="return to map" />
+    <div id="drop-area">
+        <form class="my-form">
+            <p>Upload multiple files with the file dialog or by dragging and dropping images onto the dashed region</p>
+            <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this.files)">
+            <label class="button" for="fileElem">Select some files</label>
+            <progress id="progress-bar" max=100 value=0></progress>
+
+        </form>
+    </div>
+    <script>
+        "use strict";
+        let dropArea = document.getElementById('drop-area');
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        async function preventDefaults(e) {
+            await e.preventDefault();
+            await e.stopPropagation();
+        }
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        async function highlight(e) {
+            await dropArea.classList.add('highlight');
+        }
+
+        async function unhighlight(e) {
+            await dropArea.classList.remove('highlight');
+        }
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        async function handleDrop(e) {
+            let dt = await e.dataTransfer;
+            let files = await dt.files;
+
+            await handleFiles(files);
+        }
+        let filesDone = 0
+        let filesToDo = 0
+        let progressBar = document.getElementById('progress-bar')
+        function initializeProgress(numfiles) {
+            progressBar.value = 0
+            filesDone = 0
+            filesToDo = numfiles
+        }
+
+        function progressDone() {
+            filesDone++
+            progressBar.value = filesDone / filesToDo * 100
+        }
+        function handleFiles(files) {
+            files = [...files]
+            initializeProgress(files.length) // <- Add this line
+            files.forEach(uploadFile)
+        }
+        async function uploadFile(file) {
+            // var read = await readFileAsString(file);
+            var files = file;
+            if (files.length === 0) {
+                console.log('No file is selected');
+                return;
+            }
+
+            var reader = await new FileReader();
+            await reader.readAsText(files);
+
+            reader.onload = async function (event) {
+                let url = await 'http://localhost:64461/api/FlightPlan';
+                //let my = null;
+                try {
+                    let my = JSON.parse(event.target.result);
+                    let formData = new FormData();
+                    formData.append('file', my);
+                    console.log(JSON.stringify(my));
+
+
+                    await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                            // 'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: JSON.stringify(my)
+                    })
+                        .then(progressDone)
+                        .then(alert("flight plan has been upload"))
+                } catch (e) {
+                    alert("the information from the json file of the flight plan is incorrect");
+                }
+
+            };
+            //console.log(read);
+
+
+
+        }
+        async function readFileAsString(file) {
+            var files = file;
+            if (files.length === 0) {
+                console.log('No file is selected');
+                return;
+            }
+
+            var reader = await new FileReader();
+            reader.onload = function (event) {
+                let temp = event.target.result
+                //console.log(event.target.result);
+                // console.log('File content:', event.target.result);
+            };
+            await reader.readAsText(files);
+
+            //await console.log("f" + event);
+            //return files;
+        }
+
+
+    </script>
+</body>
+</html>

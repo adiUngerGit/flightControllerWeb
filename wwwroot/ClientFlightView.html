@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!--css-->
+    <link rel="stylesheet" href="style.css" />
+
+</head>
+<body>
+    <!--scripts-->
+    <script type="text/javascript" src="map.js"></script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBgGhfXeHbOgaq02UTUAV1Dp7xrbXF4PA&callback=load">
+    </script>
+    <script type="text/javascript" src="GetResquest.js"></script>
+    <script src=""></script>
+    <script src="listFlight.js"></script>
+    <script src="GetFlightPlan.js"></script>
+
+    <!--error messsege-->
+    <div id="error_DbEmpty" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error! </strong> The Data Base Is Empty,  <a href="#" class="alert-link">uploud flights</a>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div id="error_relativeToNotCorrect" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error! </strong> relative_to format is incorrect,  <a href="#" class="alert-link">the curret format is YY:MM:DDTHH:MM:SSZ</a>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div id="error_generic" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Error! </strong> <a href="#" class="alert-link">Try Again</a>.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+
+    <!--the onloud view, bostrapp-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-9">
+                <p><br /></p>
+                <div class="rounded-lg" id="map"></div>
+                <p><br /></p>
+                <table class="rounded-lg" id="flightDataTabel" style="font-family:verdana"></table>
+                <p><br /></p>
+                <div id="buttems" class="rounded-lg">
+                    <svg type="button" onclick="location.href='DragAndDrop.html';" value="add Flight Plan" id="addFlight" class="float-right" width="4em" height="4em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M.5 8a.5.5 0 0 1 .5.5V12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8.5a.5.5 0 0 1 1 0V12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8.5A.5.5 0 0 1 .5 8zM5 4.854a.5.5 0 0 0 .707 0L8 2.56l2.293 2.293A.5.5 0 1 0 11 4.146L8.354 1.5a.5.5 0 0 0-.708 0L5 4.146a.5.5 0 0 0 0 .708z" />
+                        <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0v-8A.5.5 0 0 1 8 2z" />
+                    </svg>
+                    <!-- <button type="button" style="font-family:verdana" size="35" class="btn btn-light" id="syncAll" onclick="changeSeycAll();">sync All</button>-->--->
+
+                    <button id="helpB" onclick="allHelp()" style="font-family:verdana" size="35" class="btn btn-success">HELP!</button>
+
+                    <button type="button" style="font-family:verdana" size="35" class="btn btn-success" id="getFlight" onclick="callRequest();">Get Flight</button>
+
+                    <input type="text" placeholder="enter the date" id="relative_to" size="14" />
+
+
+
+
+
+                    <!----<p>for show the Fligts from all servers (include extenal sever) add to the time date "&sync_all"</p>--->
+                    <!---<p>for show the Fligts from the current server  add the time date</p>--->
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <p><br /></p>
+                <table class="rounded-lg table table-hover overflow-auto" id="myFlightList">
+                    <thead>
+                        <tr>
+                            <th>Flight ID</th>
+                            <th>Company Name</th>
+                            <th>...</th>
+                        </tr>
+                    </thead>
+                </table>
+                <table class="rounded-lg table table-hover overflow-auto" id="myFlightListSyncAll">
+                    <thead>
+                        <tr>
+                            <th>Flight ID</th>
+                            <th>Company Name</th>
+                            <th>...</th>
+                        </tr>
+                    </thead>
+                </table>
+                <p><br /></p>
+                <table class="rounded-lg table table-hover overflow-auto" id="serverList">
+                    <thead>
+                        <tr>
+                            <th>Server ID</th>
+                            <th>Url</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div id="help" class="alert alert-primary alert-dismissible fade show" role="alert">
+                    <strong>Help! </strong> for show the Fligts from all servers (include extenal sever) add to the time date "&sync_all"
+                    for show the Fligts from the current server  add the time date
+                    <a href="#" class="alert-link"></a>.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+</body>
+</html>
